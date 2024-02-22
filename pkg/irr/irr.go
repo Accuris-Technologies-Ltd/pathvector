@@ -119,7 +119,19 @@ func Update(peerData *config.Peer, irrServer string, queryTimeout uint, bgpqArgs
 	// Handle acceptChildPrefixes
 	bgpqArgs4 := bgpqArgs
 	bgpqArgs6 := bgpqArgs
-	if peerData.IRRAcceptChildPrefixes != nil && *peerData.IRRAcceptChildPrefixes {
+	if peerData.IRRAcceptChildPrefixes != nil && *peerData.IRRAcceptChildPrefixes && peerData.AllowBlackholeCommunity != nil && *peerData.AllowBlackholeCommunity {
+		if bgpqArgs4 != "" {
+			bgpqArgs4 += " "
+		}
+		bgpqArgs4 += "-m 24 -R 32"
+
+		if bgpqArgs6 != "" {
+			bgpqArgs6 += " "
+		}
+		bgpqArgs6 += "-m 48 -R 128"
+	}
+
+	if peerData.IRRAcceptChildPrefixes != nil && *peerData.IRRAcceptChildPrefixes && peerData.AllowBlackholeCommunity == nil {
 		if bgpqArgs4 != "" {
 			bgpqArgs4 += " "
 		}
