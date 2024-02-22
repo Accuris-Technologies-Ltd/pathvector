@@ -6,7 +6,7 @@ on:
 
 jobs:
   Snapshot:
-    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/snapshot') && github.event.comment.user.login == 'natesales' }}
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/snapshot') && github.event.comment.user.login == 'potvinp' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -46,7 +46,6 @@ jobs:
           args: release --snapshot --rm-dist --release-header distrib/snapshot-header.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FURY_TOKEN: ${{ secrets.FURY_TOKEN }}
 
       - uses: actions/upload-artifact@v3
         with:
