@@ -91,14 +91,14 @@ protocol bgp {{ UniqueProtocolName $peer.ProtocolName $peerName $af $peer.ASN $p
 
             {{ if BoolDeref $peer.FilterBogonRoutes }}reject_bogon_routes();{{ end }}
             {{ if BoolDeref $peer.FilterBogonASNs }}reject_bogon_asns();{{ end }}
-            {{ if BoolDeref $peer.FilterRPKI }}reject_rpki_invalid();{{ end }}
-            {{ if BoolDeref $peer.StrictRPKI }}force_rpki_strict();{{ end }}
             {{ if BoolDeref $peer.FilterNeverViaRouteServers }}reject_never_via_route_servers();{{ end }}
             {{ if BoolDeref $peer.EnforceFirstAS }}enforce_first_as({{ $peer.ASN }});{{ end }}
             {{ if BoolDeref $peer.EnforcePeerNexthop }}enforce_peer_nexthop({{ $neighborNoIface }});{{ end }}
             {{ if BoolDeref $peer.FilterTransitASNs }}reject_transit_paths();{{ end }}
             {{ if or (not (Empty $peer.PrefixSet4)) (not (Empty $peer.PrefixSet6)) }}if !(net ~ AS{{ $peer.ASN }}_{{ $peer.ProtocolName }}_PFX_v{{ $af }}) then { _reject("not in prefix set"); }{{ end }}
             {{ if BoolDeref $peer.AllowBlackholeCommunity }}process_blackholes();{{ end }}
+            {{ if BoolDeref $peer.FilterRPKI }}reject_rpki_invalid();{{ end }}
+            {{ if BoolDeref $peer.StrictRPKI }}force_rpki_strict();{{ end }}
             {{ if BoolDeref $peer.FilterPrefixLength }}reject_out_of_bounds_routes();{{ end }}
             {{ if BoolDeref $peer.FilterASSet }}if !(bgp_path.last ~ AS{{ $peer.ASN }}_{{ $peer.ProtocolName }}_AS_SET_MEMBERS) then { _reject("not in AS set"); }{{ end }}
             {{ if BoolDeref $peer.FilterBlocklist }}reject_blocklist();{{ end }}

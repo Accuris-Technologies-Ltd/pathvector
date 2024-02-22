@@ -272,11 +272,11 @@ function reject_long_as_paths() {
 
 function reject_rpki_invalid() {
   {{ if .RPKIEnable }}
-  if ((net.type = NET_IP4) && (((ASN,666) !~ bgp_community) || (ASN,1,666) !~ bgp_large_community)) then {
+  if (net.type = NET_IP4) then {
     if (roa_check(rpki4, net, bgp_path.last_nonaggregated) = ROA_INVALID) then _reject("RPKI invalid");
   }
 
-  if ((net.type = NET_IP6) && (((ASN,666) !~ bgp_community) || (ASN,1,666) !~ bgp_large_community)) then {
+  if (net.type = NET_IP6) then {
     if (roa_check(rpki6, net, bgp_path.last_nonaggregated) = ROA_INVALID) then _reject("RPKI invalid");
   }
   {{ end }}
