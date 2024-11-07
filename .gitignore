@@ -11,6 +11,7 @@ output/*
 dist/
 build/
 pathvector-*-release.pdf
+release-documentation.pdf
 
 # Coverage
 cover.*
