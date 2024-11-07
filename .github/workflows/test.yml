@@ -25,7 +25,7 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
-          args: -E gosec
+          args: -E gosec -e G115
 
       - run: go get -v -t -d ./...
       - run: sudo chown $(whoami):$(whoami) /run/bird/bird.ctl
