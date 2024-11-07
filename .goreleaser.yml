@@ -40,18 +40,18 @@ nfpms:
       - deb
       - rpm
 
-publishers:
-  # The vendorbuild publisher isn't really a publisher at all. It's a hack to run the vendorbuild/build.sh script
-  # after binaries and packages are built but before the release step so packages for vendor platforms can be
-  # added to the release.
-  - name: vendorbuild
-    cmd: ./vendorbuild/build.sh
+# publishers:
+#   # The vendorbuild publisher isn't really a publisher at all. It's a hack to run the vendorbuild/build.sh script
+#   # after binaries and packages are built but before the release step so packages for vendor platforms can be
+#   # added to the release.
+#   - name: vendorbuild
+#     cmd: ./vendorbuild/build.sh
 
-  - name: fury.io
-    ids:
-      - pathvector
-    dir: "{{ dir .ArtifactPath }}"
-    cmd: curl -s -F package=@{{ .ArtifactName }} https://{{ .Env.FURY_TOKEN }}@push.fury.io/natesales/
+#   - name: fury.io
+#     ids:
+#       - pathvector
+#     dir: "{{ dir .ArtifactPath }}"
+#     cmd: curl -s -F package=@{{ .ArtifactName }} https://{{ .Env.FURY_TOKEN }}@push.fury.io/natesales/
 
 release:
   extra_files:
