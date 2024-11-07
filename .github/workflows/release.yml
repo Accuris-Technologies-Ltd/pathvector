@@ -1,18 +1,19 @@
-name: goreleaser
+name: Full Release
 
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+' # symver vmajor.minor.patch format only
+      - 'v[0-9]+.[0-9]+.[0-9]+' # Semantic version tags only
 
 jobs:
-  goreleaser:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
@@ -23,14 +24,19 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y pandoc texlive-xetex
 
-      - name: Store signing files
+      - name: Generate PDF documentation
         run: |
-          echo "$JUNIPER_KEY" | base64 -d > vendorbuild/juniper/key.pem
-          echo "$JUNIPER_CERT" | base64 -d > vendorbuild/juniper/cert.pem
-        shell: bash
-        env:
-          JUNIPER_KEY: ${{ secrets.JUNIPER_KEY }}
-          JUNIPER_CERT: ${{ secrets.JUNIPER_CERT }}
+          go generate -x
+          mv pathvector*.pdf release-documentation.pdf
+
+      # - name: Store signing files
+      #   run: |
+      #     echo "$JUNIPER_KEY" | base64 -d > vendorbuild/juniper/key.pem
+      #     echo "$JUNIPER_CERT" | base64 -d > vendorbuild/juniper/cert.pem
+      #   shell: bash
+      #   env:
+      #     JUNIPER_KEY: ${{ secrets.JUNIPER_KEY }}
+      #     JUNIPER_CERT: ${{ secrets.JUNIPER_CERT }}
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
@@ -39,4 +45,26 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FURY_TOKEN: ${{ secrets.FURY_TOKEN }}
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Full Release Artifacts
+          path: |
+            dist/pathvector*.deb
+            dist/pathvector*.rpm
+            dist/pathvector*checksums.txt
+            dist/pathvector*.tar.gz
+            release-documentation.pdf
+
+      - name: Create Release on GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/pathvector*.deb
+            dist/pathvector*.rpm
+            dist/pathvector*checksums.txt
+            dist/pathvector*.tar.gz
+            release-documentation.pdf
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
